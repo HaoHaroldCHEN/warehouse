@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script defer src="https://use.fontawesome.com/releases/v5.8.1/js/all.js" integrity="sha384-g5uSoOSBd7KkhAMlnQILrecXvzst9TdC09/VM+pjDTCM+1il8RHz5fKANTFFb+gQ" crossorigin="anonymous"></script>
+
+    <title>cart - Noel Leeming</title>
+  </head>
+  
+  <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">NL</a>            
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>            
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>                
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="table-responsive-md">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">title</th>
+                        <th scope="col">img</th>
+                        <th scope="col">unit price</th>
+                        <th scope="col">num</th>
+                        <th scope="col">price</th>
+                    </tr>
+                </thead>
+                <tbody class="pro">
+                    
+                </tbody>
+            </table>
+            <div style="text-align:right">Total price:<span class="total-price"></span></div>
+        </div>
+    </div>
+    <footer>copyright</footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        var host = 'http://127.0.0.1:8000/';
+        $('document').ready(function() {
+            var storage = window.sessionStorage; 
+            var total_price = 0;
+            for (var i=0, len = storage.length; i < len; i++){ 
+                var key = storage.key(i); 
+                $.ajax({
+                    url : host + 'cart_query',
+                    method : 'get',
+                    data : {
+                        sku : key
+                    }
+                }).done(function(pro_data) {
+                    $('.pro').append('<tr><td>'+pro_data.data.name+'</td><td><img style="width:30%" src="'+pro_data.data.image_url+'"></td><td>'+pro_data.data.price+'</td><td>'+storage.getItem(pro_data.data.sku)+'</td><td>'+pro_data.data.price * storage.getItem(pro_data.data.sku)+'</td></tr>');
+                    total_price += pro_data.data.price * storage.getItem(pro_data.data.sku);
+                    $('.total-price').html(total_price);
+                })                
+            }
+            
+        })
+    </script>
+  </body>
+</html>
